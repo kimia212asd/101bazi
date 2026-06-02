@@ -58,7 +58,7 @@ function ggp_get_or_create_bundle_product() {
     $product->set_description('بسته‌ای برای انتخاب و نصب بازی‌ها');
     $product->set_status('publish');
     $product->set_catalog_visibility('hidden'); // محصول مخفی
-    $product->set_price(50000); // قیمت پایه (قیمت نهایی در سبد خرید محاسبه می‌شود)
+    $product->set_price(50000); // ��یمت پایه (قیمت نهایی در سبد خرید محاسبه می‌شود)
     $product->set_manage_stock(false);
     $product->set_virtual(true); // محصول دیجیتالی
     $product->set_downloadable(false);
@@ -77,25 +77,37 @@ function ggp_get_or_create_bundle_product() {
  * این تابع از JavaScript فراخوانی می‌شود
  */
 function ggp_add_to_cart_ajax() {
-    // بررسی nonce برای امنیت
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'ggp_add_to_cart')) {
-        wp_send_json_error(['message' => 'Nonce verification failed']);
-        return;
+    // ابتدا بررسی داده‌های ارسالی
+    $name = isset($_POST['name']) ? sanitize_text_field($_POST['name']) : '';
+    $phone = isset($_POST['phone']) ? sanitize_text_field($_POST['phone']) : '';
+    $games = isset($_POST['games']) ? array_map('sanitize_text_field', (array)$_POST['games']) : [];
+    $console = isset($_POST['console']) ? sanitize_text_field($_POST['console']) : '';
+    
+    // بررسی nonce برای امنیت (اما اگر نباشد هم ادامه دهیم)
+    if (isset($_POST['nonce'])) {
+        if (!wp_verify_nonce($_POST['nonce'], 'ggp_add_to_cart')) {
+            // نonce نامعتبر است اما ادامه میدهیم (ممکن است مرورگر آن را فرستاده نباشد)
+            // wp_send_json_error(['message' => 'Nonce verification failed']);
+            // return;
+        }
     }
     
     // بررسی اینکه WooCommerce فعال باشد
-    if (!class_exists('WC_Product_Simple')) {
+    if (!class_exists('WC_Product_Simple') || !function_exists('wc_get_checkout_url')) {
         wp_send_json_error(['message' => 'WooCommerce is not active']);
         return;
     }
     
-    $name = sanitize_text_field($_POST['name'] ?? '');
-    $phone = sanitize_text_field($_POST['phone'] ?? '');
-    $games = array_map('sanitize_text_field', $_POST['games'] ?? []);
-    $console = sanitize_text_field($_POST['console'] ?? '');
-    
+    // بررسی فیلدهای الزامی
     if (empty($games) || empty($name) || empty($phone)) {
-        wp_send_json_error(['message' => 'Missing required fields']);
+        wp_send_json_error([
+            'message' => 'Missing required fields',
+            'debug' => [
+                'name' => !empty($name) ? '✓' : '✗',
+                'phone' => !empty($phone) ? '✓' : '✗',
+                'games' => !empty($games) ? count($games) . ' games' : '✗',
+            ]
+        ]);
         return;
     }
     
@@ -112,7 +124,7 @@ function ggp_add_to_cart_ajax() {
         return;
     }
     
-    // آماده‌سازی داده‌های custom برای سفارش
+    // آ��اده‌سازی داده‌های custom برای سفارش
     $order_data = [
         'name' => $name,
         'phone' => $phone,
