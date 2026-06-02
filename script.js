@@ -415,18 +415,27 @@ https://t.me/wp101
 
             // رویداد دکمه افزودن به سبد خرید
             $('#add-to-cart-btn').off('click').on('click', function () {
+                // تبدیل selectedGames به فرمت صحیح برای ارسال
+                let formData = new FormData();
+                formData.append('action', 'ggp_add_to_cart');
+                formData.append('nonce', ggp_ajax.add_to_cart_nonce);
+                formData.append('name', name);
+                formData.append('phone', phone);
+                formData.append('console', consoleValue);
+                
+                // افزودن بازی‌ها به فرمت صحیح
+                selectedGames.forEach((game, index) => {
+                    formData.append('games[]', game);
+                });
+                
                 $.ajax({
                     url: ggp_ajax.ajax_url,
                     type: 'POST',
-                    data: {
-                        action: 'ggp_add_to_cart',
-                        nonce: ggp_ajax.add_to_cart_nonce,
-                        name: name,
-                        phone: phone,
-                        games: selectedGames,
-                        console: consoleValue
-                    },
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function (response) {
+                        console.log('Success response:', response);
                         if (response.success) {
                             // هدایت به صفحه checkout
                             window.location.href = response.data.checkout_url;
@@ -434,7 +443,8 @@ https://t.me/wp101
                             alert('❌ خطا: ' + (response.data?.message || 'خطایی در افزودن به سبد خرید رخ داد'));
                         }
                     },
-                    error: function () {
+                    error: function (xhr, status, error) {
+                        console.log('Error:', error);
                         alert('❌ خطا در ارتباط با سرور');
                     }
                 });
