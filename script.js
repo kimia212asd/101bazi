@@ -36,7 +36,7 @@ jQuery(function ($) {
             groupsLoaded = false;
             container.empty();
             container.removeClass("single-grid");
-            container.before(`<div id="ggp-instruction" style="text-align:center; margin:10px 0; font-family:'IRANSans', Tahoma, sans-serif; font-weight:bold;">برای انتخاب بازی بروی دسته کلیک کنید</div>`);
+            container.before(`<div id="ggp-instruction" style="text-align:center; margin:10px 0; font-family:'IRANSans', Tahoma, sans-serif; font-weight:bold;">برای انتخاب بازی بروی دسته‌ها کلیک کنید و سپس روی عکس بازی برای انتخاب کلیک کنید.</div>`);
         }
 
         $.post(ggp_ajax.ajax_url, {
@@ -139,39 +139,39 @@ jQuery(function ($) {
     });
 
     // جستجو در همه دسته‌ها و یا دسته خاص
-searchBox.on('input', function () {
-    const search = $(this).val().toLowerCase();
-    const selectedCategory = categoryFilter.val();
+    searchBox.on('input', function () {
+        const search = $(this).val().toLowerCase();
+        const selectedCategory = categoryFilter.val();
 
-    if (selectedCategory) {
-        loadGames(true);
-    } else {
-        $('.group-container').each(function () {
-            let hasMatch = false;
-            const groupContent = $(this).find('.group-content');
-            groupContent.children().each(function () {
-                const title = $(this).data('title').toLowerCase();
-                if (title.includes(search)) {
+        if (selectedCategory) {
+            loadGames(true);
+        } else {
+            $('.group-container').each(function () {
+                let hasMatch = false;
+                const groupContent = $(this).find('.group-content');
+                groupContent.children().each(function () {
+                    const title = $(this).data('title').toLowerCase();
+                    if (title.includes(search)) {
+                        $(this).show();
+                        hasMatch = true;
+                    } else {
+                        $(this).hide();
+                    }
+                });
+
+                if (hasMatch) {
                     $(this).show();
-                    hasMatch = true;
+                    // باز کردن خودکار گروه
+                    groupContent.slideDown(300);
+                    $(this).find('.toggle-icon').text('−');
                 } else {
                     $(this).hide();
+                    groupContent.slideUp(300);
+                    $(this).find('.toggle-icon').text('+');
                 }
             });
-
-            if (hasMatch) {
-                $(this).show();
-                // باز کردن خودکار گروه
-                groupContent.slideDown(300);
-                $(this).find('.toggle-icon').text('−');
-            } else {
-                $(this).hide();
-                groupContent.slideUp(300);
-                $(this).find('.toggle-icon').text('+');
-            }
-        });
-    }
-});
+        }
+    });
 
     categoryFilter.on('change', function () {
         loadGames(true);
@@ -224,7 +224,7 @@ searchBox.on('input', function () {
             content += '</ul>';
             if (selectedGames.length > 0) {
                 content += '<div style="margin-top:10px; text-align:center;">' +
-                    '<button id="go-to-register" style="padding:10px 15px; background:#0073aa; color:white; border:none; border-radius:5px; cursor:pointer; margin:0 5px;">ثبت سفارش و دریافت</button>' +
+                    '<button id="go-to-register" style="padding:10px 15px; background:#0073aa; color:white; border:none; border-radius:5px; cursor:pointer; margin:0 5px;">ثبت سفارش و درخواست</button>' +
                     '<button id="continue-selecting" style="padding:10px 15px; background:#6c757d; color:white; border:none; border-radius:5px; cursor:pointer; margin:0 5px;">ادامه انتخاب</button>' +
                     '</div>';
             }
@@ -252,10 +252,10 @@ searchBox.on('input', function () {
         const helpText = `
 <strong style="display:block; text-align:center;">راهنمای انتخاب بازی</strong>
 <ul style="list-style:none; padding:0; margin:10px 0; text-align:right;">
-  <li style="margin-bottom:5px;">&#9679; برای انتخاب بازی‌ها، ابتدا بر روی هر دسته کلیک نمایید تا عکس‌های بازی‌های آن دسته نمایش پیدا کند</li>
-  <li style="margin-bottom:5px;">&#9679; سپس برای انتخاب بازی مورد نظر، روی عکس آن کلیک کنید. تعداد بازی‌های انتخاب شده در پایین صفحه نشان داده می‌شود</li>
-  <li style="margin-bottom:5px;">&#9679; پس از تکمیل انتخاب، در انتهای صفحه فرم اطلاعات، شامل مشخصات و شماره تماس خود را وارد کنید</li>
-  <li style="margin-bottom:5px;">&#9679; یک نسخه از سفارش شما به صورت فایل متنی در گوشی شما ذخیره شده و نسخه‌ای از آن برای ما ارسال میشود</li>
+  <li style="margin-bottom:5px;">&#9679; برای انتخاب بازی‌ها، ابتدا بر روی هر دسته کلیک نمایید تا عکس‌های بازی‌های آن دسته نمایش یابند.</li>
+  <li style="margin-bottom:5px;">&#9679; سپس برای انتخاب بازی مورد نظر، روی عکس آن کلیک کنید. تعداد بازی‌های انتخاب شده در پایین صفحه نمایش داده می‌شود.</li>
+  <li style="margin-bottom:5px;">&#9679; پس از تکمیل انتخاب، در انتهای صفحه فرم اطلاعات، شامل مشخصات و شماره تماس خود را وارد کنید.</li>
+  <li style="margin-bottom:5px;">&#9679; یک نسخه از سفارش شما به صورت فایل متنی در گوشی شما ذخیره شده و نسخه‌ای از آن برای ما ارسال خواهد شد.</li>
   <li style="margin-bottom:5px;">&#9679; برای ریختن بازی‌ها پس از ثبت سفارش، با آیدی wp101 در تلگرام پیام بفرستید.</li>
   <li style="margin-bottom:5px;">&#9679; با تشکر</li>
 </ul>
@@ -264,45 +264,45 @@ searchBox.on('input', function () {
         helpModal.fadeToggle();
     });
 
-$('#ggp-final-submit').on('click', function () {
-    const name = nameField.val().trim();
-    const phone = phoneField.val().trim();
+    $('#ggp-final-submit').on('click', function () {
+        const name = nameField.val().trim();
+        const phone = phoneField.val().trim();
 
-    if (!name || !phone || selectedGames.length === 0) {
-        alert("لطفاً نام، شماره تماس و حداقل یک بازی را وارد کنید.");
-        return;
-    }
-
-    const consoleInput = document.querySelector('input[name="console"]');
-    const consoleValue = consoleInput ? consoleInput.value : '';
-
-    // ابتدا ذخیره سفارش در سیستم
-    $.post(ggp_ajax.ajax_url, {
-        action: 'ggp_save_order',
-        name: name,
-        phone: phone,
-        games: selectedGames,
-        console: consoleValue
-    }, function (response) {
-        if (!response.success) {
-            const msg = response.data?.message || 'خطایی در ثبت سفارش رخ داد.';
-            alert("❌ " + msg);
+        if (!name || !phone || selectedGames.length === 0) {
+            alert("لطفاً نام، شماره تماس و حداقل یک بازی را وارد کنید.");
             return;
         }
 
-        // ارسال به تلگرام
+        const consoleInput = document.querySelector('input[name="console"]');
+        const consoleValue = consoleInput ? consoleInput.value : '';
+
+        // ابتدا ذخیره سفارش در سیستم
         $.post(ggp_ajax.ajax_url, {
-            action: 'ggp_telegram',
+            action: 'ggp_save_order',
             name: name,
             phone: phone,
             games: selectedGames,
             console: consoleValue
-        });
+        }, function (response) {
+            if (!response.success) {
+                const msg = response.data?.message || 'خطایی در ثبت سفارش رخ داد.';
+                alert("❌ " + msg);
+                return;
+            }
 
-        // دانلود فایل
-        const utf8Bom = '\uFEFF';
-        const gameLines = selectedGames.join('\r\n');
-        const footer = `
+            // ارسال به تلگرام
+            $.post(ggp_ajax.ajax_url, {
+                action: 'ggp_telegram',
+                name: name,
+                phone: phone,
+                games: selectedGames,
+                console: consoleValue
+            });
+
+            // دانلود فایل
+            const utf8Bom = '\uFEFF';
+            const gameLines = selectedGames.join('\r\n');
+            const footer = `
 
 ----------------------------------------
 
@@ -315,7 +315,8 @@ https://101bazi.ir/product/ps4-sub-farsi-down/
 
 ----------------------------------------
 2) بازی‌های بدون زیرنویس فارسی
-اگر بازی‌های انتخابی شما زیرنویس فارسی ندارند، می‌توانید با استفاده از آموزش‌های سایت بازی‌ها را دانلود و نصب کنید
+اگر بازی‌های انتخابی شما زیرنویس فارسی ندارند، می‌توانید با استفاده از آموزش‌های سایت بازی‌ها را دانلود کنید.
+
 برای هماهنگی/پشتیبانی، همین فایل سفارش را از یکی از راه‌های زیر ارسال کنید:
 
 ایتا: @wp101s
@@ -330,23 +331,23 @@ https://t.me/wp101
 مشاوره تلفنی:
 09124800575
 `;
-        const fullText = utf8Bom + gameLines + footer;
-        const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
-        const fileName = `${phone}-${name.replace(/\s+/g, '_')}.txt`;
+            const fullText = utf8Bom + gameLines + footer;
+            const blob = new Blob([fullText], { type: 'text/plain;charset=utf-8' });
+            const fileName = `${phone}-${name.replace(/\s+/g, '_')}.txt`;
 
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
 
-        // نمایش پیام موفقیت و دکمه‌های جدید
-        const gameCount = selectedGames.length;
-        const pricePerGame = ggp_calculate_price_per_game(gameCount);
-        const totalPrice = pricePerGame * gameCount;
+            // نمایش پیام موفقیت و دکمه‌های جدید
+            const gameCount = selectedGames.length;
+            const pricePerGame = ggp_calculate_price_per_game(gameCount);
+            const totalPrice = pricePerGame * gameCount;
 
-const successMsg = `
+            const successMsg = `
 <div id="order-success-msg" style="margin-top:15px; padding:16px; border:2px solid #4CAF50; border-radius:10px; background:#f1f8f4; font-size:16px; line-height:2;">
   <p style="margin:0 0 15px 0; color:#2e7d32;"><strong>✅ سفارش شما با موفقیت ثبت شد!</strong></p>
   <div style="background:white; border:1px solid #ddd; border-radius:8px; padding:12px; margin-bottom:15px;">
@@ -409,47 +410,48 @@ const successMsg = `
     <a href="tel:09124800575" style="color:#222; font-weight:700; text-decoration:underline;">09124800575</a>
   </p>
 </div>`;
-        $('#order-success-msg').remove();
-        popupForm.after(successMsg);
+            $('#order-success-msg').remove();
+            popupForm.after(successMsg);
 
-        // رویداد دکمه افزودن به سبد خرید
-        $('#add-to-cart-btn').off('click').on('click', function () {
-            $.ajax({
-                url: ggp_ajax.ajax_url,
-                type: 'POST',
-                data: {
-                    action: 'ggp_add_to_cart',
-                    nonce: ggp_ajax.add_to_cart_nonce,
-                    name: name,
-                    phone: phone,
-                    games: selectedGames,
-                    console: consoleValue
-                },
-                success: function (response) {
-                    if (response.success) {
-                        // هدایت به صفحه checkout
-                        window.location.href = response.data.checkout_url;
-                    } else {
-                        alert('❌ خطا: ' + (response.data?.message || 'خطایی در افزودن به سبد خرید رخ داد'));
+            // رویداد دکمه افزودن به سبد خرید
+            $('#add-to-cart-btn').off('click').on('click', function () {
+                $.ajax({
+                    url: ggp_ajax.ajax_url,
+                    type: 'POST',
+                    data: {
+                        action: 'ggp_add_to_cart',
+                        nonce: ggp_ajax.add_to_cart_nonce,
+                        name: name,
+                        phone: phone,
+                        games: selectedGames,
+                        console: consoleValue
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            // هدایت به صفحه checkout
+                            window.location.href = response.data.checkout_url;
+                        } else {
+                            alert('❌ خطا: ' + (response.data?.message || 'خطایی در افزودن به سبد خرید رخ داد'));
+                        }
+                    },
+                    error: function () {
+                        alert('❌ خطا در ارتباط با سرور');
                     }
-                },
-                error: function () {
-                    alert('❌ خطا در ارتباط با سرور');
-                }
+                });
             });
-        });
 
-        // رویداد ادامه خریداری
-        $('#continue-shopping').off('click').on('click', function () {
-            location.reload();
-        });
+            // رویداد ادامه خریداری
+            $('#continue-shopping').off('click').on('click', function () {
+                location.reload();
+            });
 
-        nameField.val('');
-        phoneField.val('');
-        selectedGames = [];
-        $('input[type="checkbox"]').prop('checked', false);
-        $('.game-item').removeClass('selected');
-        updateSelectedBtn();
+            nameField.val('');
+            phoneField.val('');
+            selectedGames = [];
+            $('input[type="checkbox"]').prop('checked', false);
+            $('.game-item').removeClass('selected');
+            updateSelectedBtn();
+        });
     });
 });
 
