@@ -415,6 +415,13 @@ https://t.me/wp101
 
             // رویداد دکمه افزودن به سبد خرید
             $('#add-to-cart-btn').off('click').on('click', function () {
+                console.log('🔴 شروع ارسال به سبد خرید...');
+                console.log('Name:', name);
+                console.log('Phone:', phone);
+                console.log('Console:', consoleValue);
+                console.log('Games Count:', selectedGames.length);
+                console.log('Games:', selectedGames);
+                
                 // تبدیل selectedGames به فرمت صحیح برای ارسال
                 let formData = new FormData();
                 formData.append('action', 'ggp_add_to_cart');
@@ -428,6 +435,8 @@ https://t.me/wp101
                     formData.append('games[]', game);
                 });
                 
+                console.log('FormData آماده شد، در حال ارسال...');
+                
                 $.ajax({
                     url: ggp_ajax.ajax_url,
                     type: 'POST',
@@ -435,16 +444,20 @@ https://t.me/wp101
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        console.log('Success response:', response);
+                        console.log('✅ پاسخ موفق:', response);
                         if (response.success) {
+                            console.log('🎉 رفتن به صفحه checkout...');
                             // هدایت به صفحه checkout
                             window.location.href = response.data.checkout_url;
                         } else {
+                            console.log('❌ خطا در پاسخ:', response.data?.message);
                             alert('❌ خطا: ' + (response.data?.message || 'خطایی در افزودن به سبد خرید رخ داد'));
                         }
                     },
                     error: function (xhr, status, error) {
-                        console.log('Error:', error);
+                        console.log('❌ خطای AJAX:', error);
+                        console.log('Status:', status);
+                        console.log('Response:', xhr.responseText);
                         alert('❌ خطا در ارتباط با سرور');
                     }
                 });
